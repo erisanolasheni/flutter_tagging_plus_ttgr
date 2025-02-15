@@ -16,9 +16,6 @@ class FlutterTagging<T extends Taggable> extends StatefulWidget {
   ///  i.e. when items are selected or removed.
   final VoidCallback? onChanged;
 
-  /// The configuration of the [TextField] that the [FlutterTagging] widget displays.
-  final TextFieldConfiguration textFieldConfiguration;
-
   /// Called with the search pattern to get the search suggestions.
   ///
   /// This callback must not be null. It is be called by the FlutterTagging widget
@@ -145,7 +142,6 @@ class FlutterTagging<T extends Taggable> extends StatefulWidget {
     this.loadingBuilder,
     this.emptyBuilder,
     this.wrapConfiguration = const WrapConfiguration(),
-    this.textFieldConfiguration = const TextFieldConfiguration(),
     this.suggestionsBoxConfiguration = const SuggestionsBoxConfiguration(),
     this.transitionBuilder,
     this.debounceDuration = const Duration(milliseconds: 300),
@@ -170,9 +166,8 @@ class _FlutterTaggingState<T extends Taggable>
   @override
   void initState() {
     super.initState();
-    _textController =
-        widget.textFieldConfiguration.controller ?? TextEditingController();
-    _focusNode = widget.textFieldConfiguration.focusNode ?? FocusNode();
+    _textController = TextEditingController();
+    _focusNode = FocusNode();
   }
 
   @override
@@ -189,42 +184,40 @@ class _FlutterTaggingState<T extends Taggable>
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TypeAheadField<T>(
-          getImmediateSuggestions: widget.enableImmediateSuggestion,
           debounceDuration: widget.debounceDuration,
           hideOnEmpty: widget.hideOnEmpty,
           hideOnError: widget.hideOnError,
           hideOnLoading: widget.hideOnLoading,
-          animationStart: widget.animationStart,
           animationDuration: widget.animationDuration,
-          autoFlipDirection:
-              widget.suggestionsBoxConfiguration.autoFlipDirection,
-          direction: widget.suggestionsBoxConfiguration.direction,
-          hideSuggestionsOnKeyboardHide:
+          hideWithKeyboard:
               widget.suggestionsBoxConfiguration.hideSuggestionsOnKeyboardHide,
-          keepSuggestionsOnLoading:
+          retainOnLoading:
               widget.suggestionsBoxConfiguration.keepSuggestionsOnLoading,
-          keepSuggestionsOnSuggestionSelected: widget
+          hideOnSelect: !widget
               .suggestionsBoxConfiguration.keepSuggestionsOnSuggestionSelected,
-          suggestionsBoxController:
-              widget.suggestionsBoxConfiguration.suggestionsBoxController,
-          suggestionsBoxDecoration:
-              widget.suggestionsBoxConfiguration.suggestionsBoxDecoration,
-          suggestionsBoxVerticalOffset:
-              widget.suggestionsBoxConfiguration.suggestionsBoxVerticalOffset,
+          suggestionsController: widget.suggestionsBoxConfiguration
+              .suggestionsBoxController as SuggestionsController<T>?,
+          offset: Offset(0,
+              widget.suggestionsBoxConfiguration.suggestionsBoxVerticalOffset),
+          decorationBuilder: (context, child) => child,
+          builder: (context, controller, focusNode) {
+            return TextField(
+              controller: _textController,
+              focusNode: _focusNode,
+              decoration: const InputDecoration(),
+              enabled: true,
+              autocorrect: true,
+              autofocus: false,
+            );
+          },
           errorBuilder: widget.errorBuilder,
-          transitionBuilder: widget.transitionBuilder,
           loadingBuilder: (context) =>
               widget.loadingBuilder?.call(context) ??
-              SizedBox(
+              const SizedBox(
                 height: 3.0,
                 child: LinearProgressIndicator(),
               ),
-          noItemsFoundBuilder: widget.emptyBuilder,
-          textFieldConfiguration: widget.textFieldConfiguration.copyWith(
-            focusNode: _focusNode,
-            controller: _textController,
-            enabled: widget.textFieldConfiguration.enabled,
-          ),
+          emptyBuilder: widget.emptyBuilder,
           suggestionsCallback: (query) async {
             final suggestions = await widget.findSuggestions(query);
             suggestions.removeWhere(widget.initialItems.contains);
@@ -274,7 +267,7 @@ class _FlutterTaggingState<T extends Taggable>
               ),
             );
           },
-          onSuggestionSelected: (suggestion) {
+          onSelected: (suggestion) {
             if (_additionItem != suggestion) {
               widget.initialItems.add(suggestion);
               setState(() {});

@@ -56,15 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(8.0),
             child: FlutterTagging<Language>(
               initialItems: _selectedLanguages,
-              textFieldConfiguration: TextFieldConfiguration(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  filled: true,
-                  fillColor: Colors.green.withAlpha(30),
-                  hintText: 'Search Tags',
-                  labelText: 'Select Tags',
-                ),
-              ),
               findSuggestions: getLanguages,
               additionCallback: (value) {
                 return Language(

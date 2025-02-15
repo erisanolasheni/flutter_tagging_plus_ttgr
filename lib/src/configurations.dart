@@ -102,14 +102,14 @@ class ChipConfiguration {
   /// This only has an effect on widgets that respect the [DefaultTextStyle],
   /// such as [Text].
   ///
-  /// If [labelStyle.color] is a [MaterialStateProperty<Color>], [MaterialStateProperty.resolve]
-  /// is used for the following [MaterialState]s:
+  /// If [labelStyle.color] is a [MaterialStateProperty<Color>], [WidgetStateProperty.resolve]
+  /// is used for the following [WidgetState]s:
   ///
-  ///  * [MaterialState.disabled].
-  ///  * [MaterialState.selected].
-  ///  * [MaterialState.hovered].
-  ///  * [MaterialState.focused].
-  ///  * [MaterialState.pressed].
+  ///  * [WidgetState.disabled].
+  ///  * [WidgetState.selected].
+  ///  * [WidgetState.hovered].
+  ///  * [WidgetState.focused].
+  ///  * [WidgetState.pressed].
   final TextStyle? labelStyle;
 
   /// The [OutlinedBorder] to draw around the chip.
@@ -362,27 +362,14 @@ class SuggestionsBoxConfiguration {
   /// Defaults to false.
   final bool keepSuggestionsOnSuggestionSelected;
 
-  /// If set to true, in the case where the suggestions box has less than
-  /// _SuggestionsBoxController.minOverlaySpace to grow in the desired [direction], the direction axis
-  /// will be temporarily flipped if there's more room available in the opposite
-  /// direction.
-  ///
-  /// Defaults to false
-  final bool autoFlipDirection;
-
   /// How far below the text field should the suggestions box be
   ///
   /// Defaults to 5.0
   final double suggestionsBoxVerticalOffset;
 
-  /// The decoration of the material sheet that contains the suggestions.
-  ///
-  /// If null, default decoration with an elevation of 4.0 is used
-  final SuggestionsBoxDecoration suggestionsBoxDecoration;
-
   /// Used to control the `_SuggestionsBox`. Allows manual control to
   /// open, close, toggle, or resize the `_SuggestionsBox`.
-  final SuggestionsBoxController? suggestionsBoxController;
+  final SuggestionsController? suggestionsBoxController;
 
   /// Determine the [SuggestionBox]'s direction.
   ///
@@ -398,12 +385,10 @@ class SuggestionsBoxConfiguration {
   ///
   const SuggestionsBoxConfiguration({
     this.direction = AxisDirection.down,
-    this.autoFlipDirection = false,
     this.hideSuggestionsOnKeyboardHide = true,
     this.keepSuggestionsOnLoading = true,
     this.keepSuggestionsOnSuggestionSelected = false,
     this.suggestionsBoxController,
-    this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
     this.suggestionsBoxVerticalOffset = 5.0,
   });
 }
