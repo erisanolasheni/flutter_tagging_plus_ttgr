@@ -129,6 +129,8 @@ class FlutterTagging<T extends Taggable> extends StatefulWidget {
   ///
   final List<T> initialItems;
 
+  final InputDecoration inputDecoration;
+
   /// Creates a [FlutterTagging] widget.
   FlutterTagging({
     required this.initialItems,
@@ -151,6 +153,7 @@ class FlutterTagging<T extends Taggable> extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 500),
     this.animationStart = 0.25,
     this.onAdded,
+    this.inputDecoration
   });
 
   @override
@@ -204,7 +207,7 @@ class _FlutterTaggingState<T extends Taggable>
             return TextField(
               controller: _textController,
               focusNode: _focusNode,
-              decoration: const InputDecoration(),
+              decoration: widget.inputDecoration ?? InputDecoration(),
               enabled: true,
               autocorrect: true,
               autofocus: false,
