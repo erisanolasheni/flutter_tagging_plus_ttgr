@@ -129,7 +129,7 @@ class FlutterTagging<T extends Taggable> extends StatefulWidget {
   ///
   final List<T> initialItems;
 
-  final InputDecoration inputDecoration;
+  final InputDecoration? inputDecoration;
 
   /// Creates a [FlutterTagging] widget.
   FlutterTagging({
